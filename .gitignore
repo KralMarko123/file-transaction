@@ -367,4 +367,4 @@ aspnetserver/Data/AppDB.db-shm
 aspnetserver/Data/AppDB.db-wal
 aspnetserver/Data/AppDB.db
 *.db
-
+*.txt
