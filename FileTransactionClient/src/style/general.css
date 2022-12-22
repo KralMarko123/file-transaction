@@ -16,12 +16,12 @@
 	justify-content: center;
 	align-items: center;
 
-	font-size: 2em;
+	font-size: 1.5em;
 	font-family: "Hanken Grotesk", sans-serif;
 }
 
 .container {
-	width: fit-content;
+	width: 50%;
 
 	display: flex;
 	flex-direction: column;
@@ -29,19 +29,20 @@
 	gap: 0.25em;
 }
 
-.input__container {
+.file__input {
+	font-size: 0.75em;
+}
+
+.button__container {
+	width: 100%;
+
 	display: flex;
 	align-items: center;
 	gap: 0.5em;
 }
 
-.file__input,
 .button {
 	font-size: 1em;
-	outline: none;
-}
-
-.button {
 	padding: 0.5em;
 	background-color: transparent;
 	border: solid 3px var(--text);
@@ -55,4 +56,13 @@
 .button:hover {
 	color: var(--dark);
 	background-color: var(--text);
+}
+
+@media (max-width: 1199px) {
+	.container {
+		width: 90%;
+	}
+}
+
+@media screen {
 }

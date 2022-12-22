@@ -2,7 +2,7 @@ import { React, useState, useRef } from "react";
 
 const App = () => {
 	const [selectedFile, setSelectedFile] = useState(null);
-	const [response, setResponse] = useState(null);
+	const [message, setMessage] = useState(null);
 	const linkRef = useRef(null);
 
 	const onFileUpload = async () => {
@@ -13,57 +13,55 @@ const App = () => {
 			method: "POST",
 			body: formData,
 		})
-			.then((res) => {
-				return res.json();
-			})
-			.then((data) => {
-				console.log(data);
-				setResponse(data);
-			});
+			.then((response) => response.text())
+			.then((message) => setMessage(message));
 	};
 
-	const onFileDownload = () => {
-		console.log(response.file);
-
-		try {
-			const file = new Blob([response.file.fileContents], { type: response.file.contentType });
-			console.log(file);
-			const href = window.URL.createObjectURL(file);
-			const anchor = linkRef.current;
-			anchor.download = response.file.fileDownloadName;
-			anchor.href = href;
-			anchor.click();
-			window.URL.revokeObjectURL(href);
-		} catch (ex) {
-			console.log("saveBlob method failed with the following exception:");
-			console.log(ex);
-		}
+	const onFileDownload = async () => {
+		await fetch("https://localhost:7118/downloadFile", {
+			method: "GET",
+		})
+			.then((res) => res.blob())
+			.then((fileData) => {
+				const file = new Blob([fileData], { type: fileData.contentType });
+				const href = window.URL.createObjectURL(file);
+				const anchor = linkRef.current;
+				anchor.download = "Result.txt";
+				anchor.href = href;
+				anchor.click();
+				window.URL.revokeObjectURL(href);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	};
 
 	return (
 		<div className="page">
 			<div className="container">
-				<div className="input__container">
-					<input
-						className="file__input"
-						type="file"
-						onChange={(e) => setSelectedFile(e.target.files[0])}
-					/>
-					<button className="button" onClick={() => onFileUpload()}>
-						Process File
-					</button>
+				<input
+					className="file__input"
+					type="file"
+					onChange={(e) => setSelectedFile(e.target.files[0])}
+				/>
 
-					<button className="button" onClick={() => onFileDownload()}>
-						Download File
-					</button>
+				<div className="button__container">
+					{selectedFile && (
+						<button className="button" onClick={() => onFileUpload()}>
+							Process File
+						</button>
+					)}
+
+					{message && (
+						<button className="button" onClick={() => onFileDownload()}>
+							Download File
+						</button>
+					)}
 				</div>
 
-				{response && (
+				{message && (
 					<>
-						<p>
-							Sum is {response.result} and was calculated in approximately {response.elapsedMs}{" "}
-							milliseconds.
-						</p>
+						<p>{message}</p>
 						<a ref={linkRef}></a>
 					</>
 				)}
