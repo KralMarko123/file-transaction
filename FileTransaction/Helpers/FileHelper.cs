@@ -12,33 +12,42 @@ namespace FileTransaction.Helpers
                 try
                 {
                     var watch = System.Diagnostics.Stopwatch.StartNew();
-                    var result = 0;
+                    var maxInteger = int.MinValue;
+                    var maxIntegerRowNumber = int.MinValue;
 
                     using (var reader = new StreamReader(file.OpenReadStream()))
                     {
+                        var rowCount = 0;
+
                         while (reader.Peek() >= 0)
                         {
+                            rowCount++;
+
                             var row = await reader.ReadLineAsync();
 
                             if (string.IsNullOrEmpty(row)) continue;
 
                             var rowAsNumber = int.Parse(row!.Trim());
 
-                            result += rowAsNumber;
+                            if (rowAsNumber > maxInteger)
+                            {
+                                maxInteger = rowAsNumber;
+                                maxIntegerRowNumber = rowCount;
+                            }
                         }
                     }
 
                     using (var fileWriter = new StreamWriter("Result.txt"))
                     {
-                        fileWriter.WriteLine($"Sum of integers is: {result}");
+                        fileWriter.WriteLine($"The max integer is: {maxInteger} and it is located on line: {maxIntegerRowNumber}");
                     }
 
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
 
-                    return new Response { IsOk = true, Message = $"Sum is: {result}. Processing took about {elapsedMs} milliseconds." };
+                    return new Response { IsOk = true, Message = $"Max integer is: {maxInteger} and it was found on line: {maxIntegerRowNumber}. Processing took about {elapsedMs} milliseconds." };
                 }
-                catch { return new Response { IsOk = false, Message = "Error while calculating the sum. Please check and reupload the file, then try again" }; };
+                catch { return new Response { IsOk = false, Message = "Error while finding the maximum value. Please check and reupload the file, then try again" }; };
 
             }
             else return new Response { IsOk = false, Message = "File seems to be empty" };
