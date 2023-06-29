@@ -19,15 +19,19 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.ConfigureSwaggerGen(setup =>
+{
+    setup.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "File Transaction"
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseCors();
