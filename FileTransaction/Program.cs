@@ -23,12 +23,13 @@ builder.Services.ConfigureSwaggerGen(setup =>
 {
     setup.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "File Transaction Solution"
+        Title = "File Transaction"
     });
 });
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
