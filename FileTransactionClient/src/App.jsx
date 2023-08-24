@@ -1,6 +1,8 @@
 import { React, useState, useRef } from "react";
 
 const App = () => {
+	const SERVER_PORT = 5001;
+	const SERVER_URL = `https://localhost:${SERVER_PORT}`;
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [message, setMessage] = useState(null);
 	const linkRef = useRef(null);
@@ -9,7 +11,7 @@ const App = () => {
 		const formData = new FormData();
 		formData.append("file", selectedFile);
 
-		await fetch("https://localhost:7118/processFile", {
+		await fetch(`${SERVER_URL}/processFile`, {
 			method: "POST",
 			body: formData,
 		})
@@ -18,7 +20,7 @@ const App = () => {
 	};
 
 	const onFileDownload = async () => {
-		await fetch("https://localhost:7118/downloadFile", {
+		await fetch(`${SERVER_URL}/downloadFile`, {
 			method: "GET",
 		})
 			.then((res) => res.blob())
